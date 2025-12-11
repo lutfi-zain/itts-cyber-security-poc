@@ -92,8 +92,17 @@ print_info "Starting Cowrie honeypot..."
 cd "$COWRIE_DIR"
 sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && source cowrie-env/bin/activate && twistd -n -y cowrie.tac > /dev/null 2>&1 &"
 
-# Wait for Cowrie to start
+# Wait for Cowrie to start and create log files
 sleep 5
+
+# Ensure log directory exists and is accessible
+mkdir -p "$COWRIE_DIR/var/log/cowrie"
+chown -R "$ACTUAL_USER:$ACTUAL_USER" "$COWRIE_DIR/var"
+
+# Create empty log file if it doesn't exist
+if [ ! -f "$COWRIE_DIR/var/log/cowrie/cowrie.log" ]; then
+    sudo -u "$ACTUAL_USER" touch "$COWRIE_DIR/var/log/cowrie/cowrie.log"
+fi
 
 # Check if Cowrie is running
 if pgrep -f "cowrie" > /dev/null; then
