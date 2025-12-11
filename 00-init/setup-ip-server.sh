@@ -27,7 +27,7 @@ echo -e "${BLUE}========================================${NC}"
 echo ""
 
 # Check if running as root or with sudo
-if [ "$EUID" -ne 0 ]; then 
+if [ "$(id -u)" -ne 0 ]; then 
     echo -e "${RED}[ERROR]${NC} Please run with sudo"
     exit 1
 fi

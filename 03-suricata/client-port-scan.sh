@@ -28,7 +28,7 @@ print_status() {
 }
 
 # Check if nmap is installed
-if ! command -v nmap &> /dev/null; then
+if ! command -v nmap > /dev/null 2>&1; then
     echo -e "${RED}[ERROR]${NC} nmap is not installed"
     echo "Run: sudo apt install nmap"
     exit 1
