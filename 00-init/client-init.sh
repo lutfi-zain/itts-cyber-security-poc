@@ -42,9 +42,14 @@ print_error() {
     echo -e "${RED}[✗]${NC} $1"
 }
 
+# Install bash first (if not already installed)
+print_info "Ensuring bash is installed..."
+apt-get update -qq
+apt-get install -y -qq bash
+print_status "Bash installed"
+
 # Update system
 print_info "Updating system packages..."
-apt-get update -qq
 apt-get upgrade -y -qq
 print_status "System updated"
 
@@ -55,9 +60,11 @@ apt-get install -y -qq \
     curl \
     wget \
     vim \
+    nano \
     net-tools \
     iputils-ping \
-    dnsutils
+    dnsutils \
+    sudo
 print_status "Basic tools installed"
 
 # Install Nmap

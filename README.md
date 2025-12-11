@@ -7,8 +7,8 @@ Automation scripts untuk praktikum keamanan jaringan: Honeypot (Cowrie), Firewal
 ### Hardware & Software
 - **Oracle VirtualBox** sudah terinstall
 - **2 Virtual Machines:**
-  - **Server VM** (ubuntu): Ubuntu Server 22.04 Mini ISO (~80MB)
-  - **Client VM** (ubuntu): Ubuntu Server 22.04 Mini ISO (~80MB)
+  - **Server VM**: Debian 12 / Ubuntu Server 22.04
+  - **Client VM**: Debian 12 / Ubuntu Server 22.04
 
 ### Network Configuration
 - **Network Mode:** NAT Network / Internal Network
@@ -22,12 +22,12 @@ Automation scripts untuk praktikum keamanan jaringan: Honeypot (Cowrie), Firewal
 Server VM:
 - RAM: 2GB
 - Disk: 20GB
-- Username: ubuntu
+- OS: Debian 12 / Ubuntu Server 22.04
 
 Client VM:
 - RAM: 2GB
 - Disk: 20GB
-- Username: ubuntu
+- OS: Debian 12 / Ubuntu Server 22.04
 ```
 
 ## 🚀 Quick Start
