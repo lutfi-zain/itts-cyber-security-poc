@@ -53,8 +53,18 @@ fi
 # Clone Cowrie repository
 print_info "Cloning Cowrie from GitHub..."
 cd "$USER_HOME"
-sudo -u "$ACTUAL_USER" git clone https://github.com/cowrie/cowrie.git
+if ! sudo -u "$ACTUAL_USER" git clone https://github.com/cowrie/cowrie.git; then
+    print_error "Failed to clone Cowrie repository"
+    exit 1
+fi
 cd cowrie
+
+# Verify essential files exist
+if [ ! -f "bin/cowrie" ]; then
+    print_error "Cowrie files incomplete - bin/cowrie not found"
+    exit 1
+fi
+
 print_status "Cowrie cloned"
 
 # Create virtual environment
@@ -87,12 +97,23 @@ print_status "Cowrie configured (listening on port ${COWRIE_PORT})"
 chown -R "$ACTUAL_USER:$ACTUAL_USER" "$COWRIE_DIR"
 print_status "Permissions set"
 
-# Start Cowrie (using Python directly)
+# Start Cowrie (using bin/cowrie wrapper)
 print_info "Starting Cowrie honeypot..."
 cd "$COWRIE_DIR"
-sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && source cowrie-env/bin/activate && twistd -n -y cowrie.tac > /dev/null 2>&1 &"
 
-# Wait for Cowrie to start and bind to port (increase wait time)
+# Use the official bin/cowrie start command
+if sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && bin/cowrie start"; then
+    print_info "Cowrie start command executed"
+else
+    print_error "Failed to start Cowrie"
+    print_info "Trying to check what went wrong..."
+    if [ -f "$COWRIE_DIR/var/run/cowrie.pid" ]; then
+        cat "$COWRIE_DIR/var/run/cowrie.pid"
+    fi
+    exit 1
+fi
+
+# Wait for Cowrie to start and bind to port
 print_info "Waiting for Cowrie to initialize and bind to port..."
 sleep 10
 
