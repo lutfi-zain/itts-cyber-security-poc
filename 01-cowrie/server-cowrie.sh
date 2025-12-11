@@ -58,13 +58,6 @@ if ! sudo -u "$ACTUAL_USER" git clone https://github.com/cowrie/cowrie.git; then
     exit 1
 fi
 cd cowrie
-
-# Verify essential files exist
-if [ ! -f "bin/cowrie" ]; then
-    print_error "Cowrie files incomplete - bin/cowrie not found"
-    exit 1
-fi
-
 print_status "Cowrie cloned"
 
 # Create virtual environment
@@ -96,6 +89,14 @@ print_status "Cowrie configured (listening on port ${COWRIE_PORT})"
 # Set proper permissions
 chown -R "$ACTUAL_USER:$ACTUAL_USER" "$COWRIE_DIR"
 print_status "Permissions set"
+
+# Verify bin/cowrie exists after setup
+if [ ! -f "$COWRIE_DIR/bin/cowrie" ]; then
+    print_error "bin/cowrie wrapper not found after installation"
+    print_info "This might be a repository issue. Checking structure..."
+    ls -la "$COWRIE_DIR/bin/" 2>/dev/null || echo "bin/ directory not found"
+    exit 1
+fi
 
 # Start Cowrie (using bin/cowrie wrapper)
 print_info "Starting Cowrie honeypot..."
