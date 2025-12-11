@@ -92,8 +92,17 @@ print_info "Starting Cowrie honeypot..."
 cd "$COWRIE_DIR"
 sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && source cowrie-env/bin/activate && twistd -n -y cowrie.tac > /dev/null 2>&1 &"
 
-# Wait for Cowrie to start and create log files
-sleep 5
+# Wait for Cowrie to start and bind to port (increase wait time)
+print_info "Waiting for Cowrie to initialize and bind to port..."
+sleep 10
+
+# Additional wait loop - check if port is listening
+for i in {1..10}; do
+    if netstat -tuln 2>/dev/null | grep -q ":${COWRIE_PORT}"; then
+        break
+    fi
+    sleep 2
+done
 
 # Ensure log directory exists and is accessible
 mkdir -p "$COWRIE_DIR/var/log/cowrie"
