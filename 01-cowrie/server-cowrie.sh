@@ -90,29 +90,21 @@ print_status "Cowrie configured (listening on port ${COWRIE_PORT})"
 chown -R "$ACTUAL_USER:$ACTUAL_USER" "$COWRIE_DIR"
 print_status "Permissions set"
 
-# Verify bin/cowrie exists after setup
-if [ ! -f "$COWRIE_DIR/bin/cowrie" ]; then
-    print_error "bin/cowrie wrapper not found after installation"
-    print_info "This might be a repository issue. Checking structure..."
-    ls -la "$COWRIE_DIR/bin/" 2>/dev/null || echo "bin/ directory not found"
+# Verify essential files exist
+if [ ! -f "$COWRIE_DIR/src/cowrie/core/config.py" ]; then
+    print_error "Cowrie core files not found - installation may have failed"
     exit 1
 fi
+print_status "Cowrie files verified"
 
-# Start Cowrie (using bin/cowrie wrapper)
+# Start Cowrie (using twistd directly)
 print_info "Starting Cowrie honeypot..."
 cd "$COWRIE_DIR"
 
-# Use the official bin/cowrie start command
-if sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && bin/cowrie start"; then
-    print_info "Cowrie start command executed"
-else
-    print_error "Failed to start Cowrie"
-    print_info "Trying to check what went wrong..."
-    if [ -f "$COWRIE_DIR/var/run/cowrie.pid" ]; then
-        cat "$COWRIE_DIR/var/run/cowrie.pid"
-    fi
-    exit 1
-fi
+# Start using twistd which is the standard way
+sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && source cowrie-env/bin/activate && twistd --pidfile=var/run/cowrie.pid --logfile=var/log/cowrie/cowrie.log cowrie > /dev/null 2>&1 &"
+
+print_info "Cowrie start command executed"
 
 # Wait for Cowrie to start and bind to port
 print_info "Waiting for Cowrie to initialize and bind to port..."
