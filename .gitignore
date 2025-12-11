@@ -1,0 +1,57 @@
+# Log files
+*.log
+*.log.*
+
+# Backup files
+*.backup
+*.bak
+*~
+
+# Archive files
+*.tar.gz
+*.zip
+*.tar
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+cowrie-env/
+*.egg-info/
+dist/
+build/
+
+# Cowrie specific
+cowrie/var/
+cowrie/log/
+cowrie/dl/
+cowrie/tty/
+
+# Snort logs
+snort.pid
+/var/log/snort/
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+
+# OS files
+.DS_Store
+Thumbs.db
+.directory
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Local configuration
+local.conf
+*.local
