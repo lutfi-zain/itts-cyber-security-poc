@@ -64,12 +64,7 @@ print_status "Virtual environment created"
 
 # Install dependencies
 print_info "Installing Cowrie dependencies (this may take a few minutes)..."
-sudo -u "$ACTUAL_USER" bash << EOFDEP
-cd "$COWRIE_DIR"
-source cowrie-env/bin/activate
-pip install --upgrade pip > /dev/null 2>&1
-pip install -r requirements.txt > /dev/null 2>&1
-EOFDEP
+sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && source cowrie-env/bin/activate && pip install --upgrade pip > /dev/null 2>&1 && pip install -r requirements.txt > /dev/null 2>&1"
 print_status "Dependencies installed"
 
 # Configure Cowrie
@@ -88,20 +83,20 @@ print_status "Permissions set"
 
 # Start Cowrie
 print_info "Starting Cowrie honeypot..."
-sudo -u "$ACTUAL_USER" bash << EOFSTART
-cd "$COWRIE_DIR"
-source cowrie-env/bin/activate
-bin/cowrie start
-EOFSTART
+sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && source cowrie-env/bin/activate && ./bin/cowrie start"
 
 # Wait for Cowrie to start
-sleep 3
+sleep 5
 
 # Check if Cowrie is running
 if pgrep -f "cowrie" > /dev/null; then
     print_status "Cowrie is running"
 else
     print_error "Cowrie failed to start"
+    print_info "Checking for errors..."
+    if [ -f "$COWRIE_DIR/var/log/cowrie/cowrie.log" ]; then
+        tail -20 "$COWRIE_DIR/var/log/cowrie/cowrie.log"
+    fi
     exit 1
 fi
 
