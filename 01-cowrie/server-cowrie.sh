@@ -5,8 +5,6 @@
 # Purpose: Install and run Cowrie SSH honeypot
 # ============================================
 
-set -e
-
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -17,7 +15,17 @@ NC='\033[0m'
 # Configuration
 SERVER_IP="192.168.120.122"
 COWRIE_PORT="2222"
-COWRIE_DIR="/home/ubuntu/cowrie"
+
+# Get actual user (not root when using sudo)
+if [ -n "$SUDO_USER" ]; then
+    ACTUAL_USER="$SUDO_USER"
+    USER_HOME="/home/$SUDO_USER"
+else
+    ACTUAL_USER="$(whoami)"
+    USER_HOME="$HOME"
+fi
+
+COWRIE_DIR="${USER_HOME}/cowrie"
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}  Lab 1: Cowrie SSH Honeypot${NC}"
@@ -44,21 +52,24 @@ fi
 
 # Clone Cowrie repository
 print_info "Cloning Cowrie from GitHub..."
-cd /home/ubuntu
-git clone https://github.com/cowrie/cowrie.git
+cd "$USER_HOME"
+sudo -u "$ACTUAL_USER" git clone https://github.com/cowrie/cowrie.git
 cd cowrie
 print_status "Cowrie cloned"
 
 # Create virtual environment
 print_info "Creating Python virtual environment..."
-python3 -m venv cowrie-env
-source cowrie-env/bin/activate
+sudo -u "$ACTUAL_USER" python3 -m venv cowrie-env
 print_status "Virtual environment created"
 
 # Install dependencies
 print_info "Installing Cowrie dependencies (this may take a few minutes)..."
+sudo -u "$ACTUAL_USER" bash << EOFDEP
+cd "$COWRIE_DIR"
+source cowrie-env/bin/activate
 pip install --upgrade pip > /dev/null 2>&1
 pip install -r requirements.txt > /dev/null 2>&1
+EOFDEP
 print_status "Dependencies installed"
 
 # Configure Cowrie
@@ -66,23 +77,22 @@ print_info "Configuring Cowrie..."
 cp etc/cowrie.cfg.dist etc/cowrie.cfg
 
 # Set hostname
-sed -i 's/^hostname = .*/hostname = ubuntu/' etc/cowrie.cfg
+sed -i 's/^hostname = .*/hostname = server/' etc/cowrie.cfg
 
 # Verify port configuration (default is 2222)
 print_status "Cowrie configured (listening on port ${COWRIE_PORT})"
 
 # Set proper permissions
-print_info "Setting permissions..."
-chown -R ubuntu:ubuntu "$COWRIE_DIR"
+chown -R "$ACTUAL_USER:$ACTUAL_USER" "$COWRIE_DIR"
 print_status "Permissions set"
 
 # Start Cowrie
 print_info "Starting Cowrie honeypot..."
-sudo -u ubuntu bash << 'EOSU'
-cd /home/ubuntu/cowrie
+sudo -u "$ACTUAL_USER" bash << EOFSTART
+cd "$COWRIE_DIR"
 source cowrie-env/bin/activate
 bin/cowrie start
-EOSU
+EOFSTART
 
 # Wait for Cowrie to start
 sleep 3
