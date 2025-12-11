@@ -14,6 +14,7 @@ NC='\033[0m'
 
 LOG_FILE="/var/log/ufw.log"
 KERN_LOG="/var/log/kern.log"
+SYSLOG="/var/log/syslog"
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}  UFW Firewall Log Analysis${NC}"
@@ -31,12 +32,15 @@ print_info() {
 }
 
 # Check which log file exists
-if [ -f "$LOG_FILE" ]; then
+if [ -f "$LOG_FILE" ] && [ -s "$LOG_FILE" ]; then
     ACTIVE_LOG="$LOG_FILE"
-elif grep -q "UFW BLOCK" "$KERN_LOG" 2>/dev/null; then
+elif [ -f "$KERN_LOG" ] && grep -q "UFW BLOCK" "$KERN_LOG" 2>/dev/null; then
     ACTIVE_LOG="$KERN_LOG"
+elif [ -f "$SYSLOG" ] && grep -q "UFW BLOCK" "$SYSLOG" 2>/dev/null; then
+    ACTIVE_LOG="$SYSLOG"
 else
-    echo -e "${RED}[ERROR]${NC} UFW logs not found"
+    echo -e "${RED}[ERROR]${NC} UFW logs not found or empty"
+    echo "Checked: $LOG_FILE, $KERN_LOG, $SYSLOG"
     exit 1
 fi
 
