@@ -20,7 +20,7 @@ echo -e "${BLUE}========================================${NC}"
 echo ""
 
 # Check if running as root
-if [ "$EUID" -ne 0 ]; then 
+if [ "$(id -u)" -ne 0 ]; then 
     echo -e "${RED}[ERROR]${NC} Please run with sudo"
     exit 1
 fi
@@ -35,7 +35,7 @@ print_info() {
 
 # Block client IP
 print_info "Adding UFW rule to block ${CLIENT_IP}..."
-ufw deny from "$CLIENT_IP" comment 'Blocked client for lab demo'
+ufw insert 1 deny from "$CLIENT_IP" comment 'Blocked client for lab demo'
 print_status "IP blocked: ${CLIENT_IP}"
 
 # Reload UFW
