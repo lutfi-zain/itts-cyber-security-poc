@@ -106,7 +106,22 @@ fi
 
 # Check if Cowrie is running
 if pgrep -f "cowrie" > /dev/null; then
-    print_status "Cowrie is running"
+    print_status "Cowrie process is running"
+    
+    # Wait a bit more for port to bind
+    sleep 3
+    
+    # Check if port 2222 is listening
+    if netstat -tuln | grep -q ":${COWRIE_PORT}"; then
+        print_status "Port ${COWRIE_PORT} is listening"
+    else
+        print_error "Port ${COWRIE_PORT} is NOT listening"
+        print_info "Cowrie may still be starting up, or there's a port configuration issue"
+        print_info "Checking last 30 lines of log..."
+        if [ -f "$COWRIE_DIR/var/log/cowrie/cowrie.log" ]; then
+            tail -30 "$COWRIE_DIR/var/log/cowrie/cowrie.log"
+        fi
+    fi
 else
     print_error "Cowrie failed to start"
     print_info "Checking for errors..."
@@ -129,6 +144,9 @@ echo -e "${YELLOW}[READY]${NC} Cowrie is ready on port ${COWRIE_PORT}"
 echo ""
 echo -e "To monitor logs in real-time, open another terminal and run:"
 echo -e "${YELLOW}  tail -f ${COWRIE_DIR}/var/log/cowrie/cowrie.log${NC}"
+echo ""
+echo -e "To verify port is listening:"
+echo -e "${YELLOW}  netstat -tuln | grep ${COWRIE_PORT}${NC}"
 echo ""
 echo -e "Next step: Run ${YELLOW}./01-cowrie/client-attack.sh${NC} on client VM"
 echo ""

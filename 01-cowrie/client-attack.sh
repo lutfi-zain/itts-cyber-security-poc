@@ -29,6 +29,23 @@ print_status() {
     echo -e "${GREEN}[✓]${NC} $1"
 }
 
+print_error() {
+    echo -e "${RED}[✗]${NC} $1"
+}
+
+# Test connectivity first
+echo -e "${YELLOW}Testing connection to ${SERVER_IP}:${HONEYPOT_PORT}...${NC}"
+if ! nc -z -w 3 "$SERVER_IP" "$HONEYPOT_PORT" 2>/dev/null; then
+    print_error "Cannot connect to ${SERVER_IP}:${HONEYPOT_PORT}"
+    echo -e "${RED}Please check:${NC}"
+    echo -e "  1. Is Cowrie running on server? ${YELLOW}ps aux | grep cowrie${NC}"
+    echo -e "  2. Is port 2222 listening? ${YELLOW}netstat -tuln | grep 2222${NC}"
+    echo -e "  3. Can you ping server? ${YELLOW}ping -c 3 ${SERVER_IP}${NC}"
+    exit 1
+fi
+print_status "Connected to ${SERVER_IP}:${HONEYPOT_PORT}"
+echo ""
+
 # Attack 1: SSH connection with common usernames
 print_info "Attack 1: Testing common SSH usernames..."
 for user in root admin test user; do
