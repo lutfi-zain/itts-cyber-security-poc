@@ -33,14 +33,21 @@ Client VM:
 ## 🚀 Quick Start
 
 ### Step 1: Setup VMs
-1. Create 2 VMs in VirtualBox
-2. Install Ubuntu Server Mini ISO on both
-3. Configure static IPs on both VMs
-4. Clone this repository on both VMs:
+1. Create 2 VMs in VirtualBox with NAT Network mode
+2. Install Debian/Ubuntu Server on both VMs
+3. Clone this repository on both VMs:
 ```bash
 git clone https://github.com/lutfi-zain/itts-cyber-security-poc.git
 cd itts-cyber-security-poc
 chmod +x **/*.sh
+```
+4. Configure static IPs:
+```bash
+# On Server VM:
+sudo ./00-init/setup-ip-server.sh
+
+# On Client VM:
+sudo ./00-init/setup-ip-client.sh
 ```
 
 ### Step 2: Initialize (Run Once)
@@ -108,8 +115,10 @@ chmod +x **/*.sh
 ```
 itts-cyber-security-poc/
 ├── 00-init/              # Initial setup scripts
-│   ├── server-init.sh    # Install server tools
-│   ├── client-init.sh    # Install client tools
+│   ├── setup-ip-server.sh  # Configure server static IP
+│   ├── setup-ip-client.sh  # Configure client static IP
+│   ├── server-init.sh      # Install server tools
+│   ├── client-init.sh      # Install client tools
 │   └── README.md
 ├── 01-cowrie/            # Honeypot lab
 │   ├── server-cowrie.sh
