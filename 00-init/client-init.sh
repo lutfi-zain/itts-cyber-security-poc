@@ -65,7 +65,8 @@ apt-get install -y -qq \
     iputils-ping \
     dnsutils \
     build-essential \
-    sudo
+    sudo \
+    netcat-openbsd
 print_status "Basic tools installed"
 
 # Install Nmap

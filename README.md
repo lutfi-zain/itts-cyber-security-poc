@@ -1,6 +1,6 @@
 # 🔐 ITTS Cyber Security Practice - Lab Automation
 
-Automation scripts untuk praktikum keamanan jaringan: Honeypot (Cowrie), Firewall (UFW), dan IDS (Snort).
+Automation scripts untuk praktikum keamanan jaringan: Honeypot (Cowrie), Firewall (UFW), dan IDS (Suricata).
 
 ## 📋 Prerequisites
 
@@ -94,20 +94,20 @@ sudo ./00-init/setup-ip-client.sh
 ./02-ufw/cleanup.sh             # Unblock for next lab
 ```
 
-#### 🚨 Lab 3: IDS (Snort)
+#### 🚨 Lab 3: IDS (Suricata)
 ```bash
 # Server (Right):
-./03-snort/server-snort.sh
-# Wait for "Snort is listening..."
+./03-suricata/server-suricata.sh
+# Wait for "Suricata is listening..."
 
 # Client (Left):
-./03-snort/client-normal-test.sh   # No alert
-./03-snort/client-ping-flood.sh    # Should trigger alert
-./03-snort/client-port-scan.sh     # Should trigger alert
+./03-suricata/client-normal-test.sh   # No alert
+./03-suricata/client-ping-flood.sh    # Should trigger alert
+./03-suricata/client-port-scan.sh     # Should trigger alert
 
 # Server (Right):
-./03-snort/analyze-logs.sh
-./03-snort/cleanup.sh
+./03-suricata/analyze-logs.sh
+./03-suricata/cleanup.sh
 ```
 
 ## 📂 Repository Structure
@@ -132,8 +132,8 @@ itts-cyber-security-poc/
 │   ├── client-test-after.sh
 │   ├── analyze-logs.sh
 │   └── cleanup.sh
-├── 03-snort/             # IDS lab
-│   ├── server-snort.sh
+├── 03-suricata/           # IDS lab
+│   ├── server-suricata.sh
 │   ├── client-normal-test.sh
 │   ├── client-ping-flood.sh
 │   ├── client-port-scan.sh
@@ -160,7 +160,7 @@ itts-cyber-security-poc/
 - Block IP addresses
 - Analyze firewall logs
 
-### Lab 3: IDS (Snort)
+### Lab 3: IDS (Suricata)
 - Deploy network-based IDS
 - Create custom detection rules
 - Detect ICMP flood attacks
@@ -204,7 +204,7 @@ These scripts are for **educational purposes only** in a controlled lab environm
 
 - [Cowrie SSH Honeypot](https://github.com/cowrie/cowrie)
 - [Ubuntu UFW Documentation](https://help.ubuntu.com/community/UFW)
-- [Snort IDS Documentation](https://www.snort.org/documents)
+- [Suricata IDS Documentation](https://suricata.io/)
 
 ## 👤 Author
 
