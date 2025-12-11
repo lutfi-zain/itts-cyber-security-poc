@@ -13,7 +13,7 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 # Configuration
-BACKUP_DIR="/home/ubuntu-server/logs/snort-$(date +%Y%m%d-%H%M%S)"
+BACKUP_DIR="/home/ubuntu/logs/snort-$(date +%Y%m%d-%H%M%S)"
 ALERT_FILE="/var/log/snort/alert"
 
 echo -e "${BLUE}========================================${NC}"
@@ -79,7 +79,7 @@ fi
 cp -r /var/log/snort/* "$BACKUP_DIR/" 2>/dev/null || true
 
 # Set permissions
-chown -R ubuntu-server:ubuntu-server "$BACKUP_DIR"
+chown -R ubuntu:ubuntu "$BACKUP_DIR"
 print_status "Logs backed up to ${BACKUP_DIR}"
 
 # Clear current logs for next lab session

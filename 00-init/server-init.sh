@@ -137,8 +137,8 @@ fi
 
 # Create logs directory
 print_info "Creating logs directory..."
-mkdir -p /home/ubuntu-server/logs
-chown ubuntu-server:ubuntu-server /home/ubuntu-server/logs
+mkdir -p /home/ubuntu/logs
+chown ubuntu:ubuntu /home/ubuntu/logs
 print_status "Logs directory created"
 
 # Test connectivity

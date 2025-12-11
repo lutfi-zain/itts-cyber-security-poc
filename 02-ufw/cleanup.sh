@@ -14,7 +14,7 @@ NC='\033[0m'
 
 # Configuration
 CLIENT_IP="192.168.120.123"
-BACKUP_DIR="/home/ubuntu-server/logs/ufw-$(date +%Y%m%d-%H%M%S)"
+BACKUP_DIR="/home/ubuntu/logs/ufw-$(date +%Y%m%d-%H%M%S)"
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}  Lab 2: UFW Cleanup${NC}"
@@ -39,7 +39,7 @@ print_info() {
 print_info "Backing up UFW logs..."
 mkdir -p "$BACKUP_DIR"
 cp /var/log/ufw.log "$BACKUP_DIR/" 2>/dev/null || true
-chown -R ubuntu-server:ubuntu-server "$BACKUP_DIR"
+chown -R ubuntu:ubuntu "$BACKUP_DIR"
 print_status "Logs backed up to ${BACKUP_DIR}"
 
 # Remove client block rule

@@ -17,7 +17,7 @@ NC='\033[0m'
 # Configuration
 SERVER_IP="192.168.120.122"
 COWRIE_PORT="2222"
-COWRIE_DIR="/home/ubuntu-server/cowrie"
+COWRIE_DIR="/home/ubuntu/cowrie"
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}  Lab 1: Cowrie SSH Honeypot${NC}"
@@ -44,7 +44,7 @@ fi
 
 # Clone Cowrie repository
 print_info "Cloning Cowrie from GitHub..."
-cd /home/ubuntu-server
+cd /home/ubuntu
 git clone https://github.com/cowrie/cowrie.git
 cd cowrie
 print_status "Cowrie cloned"
@@ -66,20 +66,20 @@ print_info "Configuring Cowrie..."
 cp etc/cowrie.cfg.dist etc/cowrie.cfg
 
 # Set hostname
-sed -i 's/^hostname = .*/hostname = ubuntu-server/' etc/cowrie.cfg
+sed -i 's/^hostname = .*/hostname = ubuntu/' etc/cowrie.cfg
 
 # Verify port configuration (default is 2222)
 print_status "Cowrie configured (listening on port ${COWRIE_PORT})"
 
 # Set proper permissions
 print_info "Setting permissions..."
-chown -R ubuntu-server:ubuntu-server "$COWRIE_DIR"
+chown -R ubuntu:ubuntu "$COWRIE_DIR"
 print_status "Permissions set"
 
 # Start Cowrie
 print_info "Starting Cowrie honeypot..."
-sudo -u ubuntu-server bash << 'EOSU'
-cd /home/ubuntu-server/cowrie
+sudo -u ubuntu bash << 'EOSU'
+cd /home/ubuntu/cowrie
 source cowrie-env/bin/activate
 bin/cowrie start
 EOSU

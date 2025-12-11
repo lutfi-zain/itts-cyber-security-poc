@@ -13,8 +13,8 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 # Configuration
-COWRIE_DIR="/home/ubuntu-server/cowrie"
-BACKUP_DIR="/home/ubuntu-server/logs/cowrie-$(date +%Y%m%d-%H%M%S)"
+COWRIE_DIR="/home/ubuntu/cowrie"
+BACKUP_DIR="/home/ubuntu/logs/cowrie-$(date +%Y%m%d-%H%M%S)"
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}  Lab 1: Cowrie Cleanup${NC}"
@@ -31,8 +31,8 @@ print_info() {
 
 # Stop Cowrie
 print_info "Stopping Cowrie honeypot..."
-sudo -u ubuntu-server bash << 'EOSU'
-cd /home/ubuntu-server/cowrie
+sudo -u ubuntu bash << 'EOSU'
+cd /home/ubuntu/cowrie
 source cowrie-env/bin/activate
 bin/cowrie stop
 EOSU
@@ -52,7 +52,7 @@ print_status "Cowrie stopped"
 print_info "Backing up logs to ${BACKUP_DIR}..."
 mkdir -p "$BACKUP_DIR"
 cp -r "${COWRIE_DIR}/var/log/cowrie/"* "$BACKUP_DIR/" 2>/dev/null || true
-chown -R ubuntu-server:ubuntu-server "$BACKUP_DIR"
+chown -R ubuntu:ubuntu "$BACKUP_DIR"
 print_status "Logs backed up"
 
 # Display backup location

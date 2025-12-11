@@ -50,8 +50,8 @@ echo ""
 
 # 1. Stop Cowrie
 print_info "Stopping Cowrie..."
-if [ -d "/home/ubuntu-server/cowrie" ]; then
-    sudo -u ubuntu-server bash -c "cd /home/ubuntu-server/cowrie && source cowrie-env/bin/activate && bin/cowrie stop" 2>/dev/null || true
+if [ -d "/home/ubuntu/cowrie" ]; then
+    sudo -u ubuntu bash -c "cd /home/ubuntu/cowrie && source cowrie-env/bin/activate && bin/cowrie stop" 2>/dev/null || true
     pkill -f cowrie 2>/dev/null || true
     print_status "Cowrie stopped"
 else
@@ -76,13 +76,13 @@ print_status "UFW reset to default (SSH allowed)"
 # 4. Backup all logs
 print_info "Backing up all logs..."
 BACKUP_TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-BACKUP_ROOT="/home/ubuntu-server/logs/full-cleanup-${BACKUP_TIMESTAMP}"
+BACKUP_ROOT="/home/ubuntu/logs/full-cleanup-${BACKUP_TIMESTAMP}"
 mkdir -p "$BACKUP_ROOT"
 
 # Cowrie
-if [ -d "/home/ubuntu-server/cowrie/var/log" ]; then
+if [ -d "/home/ubuntu/cowrie/var/log" ]; then
     mkdir -p "${BACKUP_ROOT}/cowrie"
-    cp -r /home/ubuntu-server/cowrie/var/log/cowrie/* "${BACKUP_ROOT}/cowrie/" 2>/dev/null || true
+    cp -r /home/ubuntu/cowrie/var/log/cowrie/* "${BACKUP_ROOT}/cowrie/" 2>/dev/null || true
 fi
 
 # UFW
@@ -97,7 +97,7 @@ if [ -d "/var/log/snort" ]; then
     cp -r /var/log/snort/* "${BACKUP_ROOT}/snort/" 2>/dev/null || true
 fi
 
-chown -R ubuntu-server:ubuntu-server "$BACKUP_ROOT"
+chown -R ubuntu:ubuntu "$BACKUP_ROOT"
 print_status "Logs backed up to ${BACKUP_ROOT}"
 
 # 5. Clear current logs
