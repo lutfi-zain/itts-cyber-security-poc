@@ -81,9 +81,21 @@ print_status "Cowrie configured (listening on port ${COWRIE_PORT})"
 chown -R "$ACTUAL_USER:$ACTUAL_USER" "$COWRIE_DIR"
 print_status "Permissions set"
 
+# Verify bin directory exists
+print_info "Verifying Cowrie installation..."
+if [ ! -f "$COWRIE_DIR/bin/cowrie" ]; then
+    print_error "Cowrie bin/cowrie not found!"
+    print_info "Directory contents:"
+    ls -la "$COWRIE_DIR/"
+    ls -la "$COWRIE_DIR/bin/" 2>/dev/null || echo "bin directory not found"
+    exit 1
+fi
+print_status "Cowrie binary verified"
+
 # Start Cowrie
 print_info "Starting Cowrie honeypot..."
-sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && source cowrie-env/bin/activate && ./bin/cowrie start"
+cd "$COWRIE_DIR"
+sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && source cowrie-env/bin/activate && bin/cowrie start"
 
 # Wait for Cowrie to start
 sleep 5
