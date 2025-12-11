@@ -67,6 +67,12 @@ print_info "Installing Cowrie dependencies (this may take a few minutes)..."
 sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && source cowrie-env/bin/activate && pip install --upgrade pip > /dev/null 2>&1 && pip install -r requirements.txt > /dev/null 2>&1"
 print_status "Dependencies installed"
 
+# Run Cowrie setup
+print_info "Running Cowrie setup..."
+cd "$COWRIE_DIR"
+sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && python3 -m venv cowrie-env && source cowrie-env/bin/activate && pip install --upgrade pip setuptools wheel"
+print_status "Cowrie setup completed"
+
 # Configure Cowrie
 print_info "Configuring Cowrie..."
 cp etc/cowrie.cfg.dist etc/cowrie.cfg
@@ -81,21 +87,10 @@ print_status "Cowrie configured (listening on port ${COWRIE_PORT})"
 chown -R "$ACTUAL_USER:$ACTUAL_USER" "$COWRIE_DIR"
 print_status "Permissions set"
 
-# Verify bin directory exists
-print_info "Verifying Cowrie installation..."
-if [ ! -f "$COWRIE_DIR/bin/cowrie" ]; then
-    print_error "Cowrie bin/cowrie not found!"
-    print_info "Directory contents:"
-    ls -la "$COWRIE_DIR/"
-    ls -la "$COWRIE_DIR/bin/" 2>/dev/null || echo "bin directory not found"
-    exit 1
-fi
-print_status "Cowrie binary verified"
-
-# Start Cowrie
+# Start Cowrie (using Python directly)
 print_info "Starting Cowrie honeypot..."
 cd "$COWRIE_DIR"
-sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && source cowrie-env/bin/activate && bin/cowrie start"
+sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && source cowrie-env/bin/activate && twistd -n -y cowrie.tac > /dev/null 2>&1 &"
 
 # Wait for Cowrie to start
 sleep 5
