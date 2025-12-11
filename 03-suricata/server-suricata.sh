@@ -102,8 +102,12 @@ print_status "Custom rules added"
 
 # Enable local rules in configuration
 print_info "Enabling local rules..."
-if ! grep -q "local.rules" "$SURICATA_CONF"; then
-    sed -i '/rule-files:/a\  - local.rules' "$SURICATA_CONF"
+# Remove relative path if it exists (fix for previous runs)
+sed -i '/[[:space:]]- local.rules/d' "$SURICATA_CONF"
+
+# Add absolute path
+if ! grep -q "$LOCAL_RULES" "$SURICATA_CONF"; then
+    sed -i "\\|rule-files:|a\\  - $LOCAL_RULES" "$SURICATA_CONF"
 fi
 print_status "Local rules enabled"
 
