@@ -91,17 +91,13 @@ apt-get install -y -qq ufw
 # Don't enable yet, will be done in lab
 print_status "UFW installed"
 
-# Install Snort dependencies
-print_info "Installing Snort and dependencies..."
+# Install Suricata IDS (modern alternative to Snort for Debian)
+print_info "Installing Suricata IDS..."
 apt-get install -y -qq \
-    snort \
-    libpcap-dev \
-    libpcre3-dev \
-    libdumbnet-dev \
-    bison \
-    flex \
-    zlib1g-dev
-print_status "Snort installed"
+    suricata \
+    jq \
+    || print_error "Suricata installation failed"
+print_status "Suricata IDS installed"
 
 # Install Cowrie dependencies
 print_info "Installing Cowrie dependencies..."
