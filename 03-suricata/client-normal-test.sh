@@ -1,4 +1,5 @@
 #!/bin/bash
+# author lutfi
 
 # ============================================
 # Lab 3: Normal Traffic Test (Should NOT trigger alerts)

@@ -1,4 +1,5 @@
 #!/bin/bash
+# author lutfi
 
 # ============================================
 # Utility: Backup All Logs

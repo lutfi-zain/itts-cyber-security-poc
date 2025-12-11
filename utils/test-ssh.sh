@@ -1,4 +1,5 @@
 #!/bin/bash
+# author lutfi
 
 # ============================================
 # SSH Connection Test Script

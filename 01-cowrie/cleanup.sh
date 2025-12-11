@@ -1,4 +1,5 @@
 #!/bin/bash
+# author lutfi
 
 # ============================================
 # Lab 1: Cowrie Cleanup Script

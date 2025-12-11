@@ -1,4 +1,5 @@
 #!/bin/bash
+# author lutfi
 
 # ============================================
 # Lab 2: UFW Firewall - Server Setup Script

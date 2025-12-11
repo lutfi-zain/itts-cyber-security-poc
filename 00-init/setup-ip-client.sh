@@ -1,4 +1,5 @@
 #!/bin/bash
+# author lutfi
 
 # ============================================
 # Client IP Configuration Script (Debian/Ubuntu)
