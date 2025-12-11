@@ -89,59 +89,20 @@ print_info "Installing hydra..."
 apt-get install -y -qq hydra
 print_status "hydra installed"
 
-# Install netcat
-print_info "Installing netcat..."
-apt-get install -y -qq netcat
-print_status "netcat installed"
-
-# Configure static IP (if not already done)
-print_info "Checking network configuration..."
-NETPLAN_FILE="/etc/netplan/00-installer-config.yaml"
-if [ -f "$NETPLAN_FILE" ]; then
-    print_info "Network configuration file found"
-    # Backup original
-    cp "$NETPLAN_FILE" "${NETPLAN_FILE}.backup"
-    print_status "Network config backed up"
-else
-    print_info "Creating network configuration..."
-    cat > "$NETPLAN_FILE" << EOF
-network:
-  version: 2
-  ethernets:
-    enp0s3:
-      addresses:
-        - ${CLIENT_IP}/24
-      nameservers:
-        addresses:
-          - 8.8.8.8
-          - 8.8.4.4
-      routes:
-        - to: default
-          via: 192.168.120.1
-EOF
-    netplan apply
-    print_status "Static IP configured: ${CLIENT_IP}"
-fi
+# netcat already installed in basic tools (netcat-openbsd)
+print_status "netcat (nc) available"
 
 # Create logs directory
 print_info "Creating logs directory..."
-mkdir -p /home/ubuntu/logs
-chown ubuntu:ubuntu /home/ubuntu/logs
-print_status "Logs directory created"
-
-# Test connectivity
-print_info "Testing connectivity..."
-if ping -c 2 8.8.8.8 > /dev/null 2>&1; then
-    print_status "Internet connectivity: OK"
+LOGS_DIR="$HOME/logs"
+if [ -n "$SUDO_USER" ]; then
+    LOGS_DIR="/home/$SUDO_USER/logs"
+    mkdir -p "$LOGS_DIR"
+    chown "$SUDO_USER:$SUDO_USER" "$LOGS_DIR"
 else
-    print_error "Internet connectivity: FAILED"
+    mkdir -p "$LOGS_DIR"
 fi
-
-if ping -c 2 "$SERVER_IP" > /dev/null 2>&1; then
-    print_status "Server connectivity: OK"
-else
-    print_error "Server connectivity: FAILED (Server may not be ready yet)"
-fi
+print_status "Logs directory created: $LOGS_DIR"
 
 # Display system information
 echo ""
@@ -152,7 +113,7 @@ echo -e "Client IP: ${GREEN}${CLIENT_IP}${NC}"
 echo -e "Server IP: ${GREEN}${SERVER_IP}${NC}"
 echo ""
 echo -e "Installed tools:"
-echo -e "  ${GREEN}✓${NC} Git, Curl, Wget, Vim"
+echo -e "  ${GREEN}✓${NC} Git, Curl, Wget, Vim, Nano"
 echo -e "  ${GREEN}✓${NC} Nmap (port scanner)"
 echo -e "  ${GREEN}✓${NC} hping3 (packet crafting)"
 echo -e "  ${GREEN}✓${NC} sshpass (SSH automation)"
@@ -160,5 +121,8 @@ echo -e "  ${GREEN}✓${NC} hydra (brute force)"
 echo -e "  ${GREEN}✓${NC} netcat (network utility)"
 echo ""
 echo -e "${GREEN}[SUCCESS]${NC} Client initialization completed!"
-echo -e "Next step: Start with ${YELLOW}Lab 1 - Cowrie Honeypot${NC}"
+echo ""
+echo -e "Next steps:"
+echo -e "  1. Test connectivity: ${YELLOW}ping ${SERVER_IP}${NC}"
+echo -e "  2. Start labs: ${YELLOW}./01-cowrie/client-attack.sh${NC}"
 echo ""
