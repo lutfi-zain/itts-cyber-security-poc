@@ -91,18 +91,30 @@ chown -R "$ACTUAL_USER:$ACTUAL_USER" "$COWRIE_DIR"
 print_status "Permissions set"
 
 # Verify essential files exist
-if [ ! -f "$COWRIE_DIR/src/cowrie/core/config.py" ]; then
-    print_error "Cowrie core files not found - installation may have failed"
-    exit 1
+if [ ! -f "$COWRIE_DIR/bin/cowrie" ]; then
+    print_error "bin/cowrie not found - checking for alternative start methods..."
+    if [ ! -d "$COWRIE_DIR/src/cowrie" ]; then
+        print_error "Cowrie source files not found - installation failed"
+        exit 1
+    fi
 fi
-print_status "Cowrie files verified"
 
-# Start Cowrie (using twistd directly)
+# Start Cowrie
 print_info "Starting Cowrie honeypot..."
 cd "$COWRIE_DIR"
 
-# Start using twistd which is the standard way
-sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && source cowrie-env/bin/activate && twistd --pidfile=var/run/cowrie.pid --logfile=var/log/cowrie/cowrie.log cowrie > /dev/null 2>&1 &"
+# Try bin/cowrie first (recommended method)
+if [ -f "$COWRIE_DIR/bin/cowrie" ]; then
+    print_info "Using bin/cowrie to start..."
+    sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && bin/cowrie start"
+else
+    # Fallback: Install Cowrie as a package and use twistd
+    print_info "Installing Cowrie package..."
+    sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && source cowrie-env/bin/activate && pip install -e . > /dev/null 2>&1"
+    
+    print_info "Starting with twistd..."
+    sudo -u "$ACTUAL_USER" bash -c "cd '$COWRIE_DIR' && source cowrie-env/bin/activate && twistd --pidfile=var/run/cowrie.pid --logfile=var/log/cowrie/cowrie.log cowrie > /dev/null 2>&1 &"
+fi
 
 print_info "Cowrie start command executed"
 
