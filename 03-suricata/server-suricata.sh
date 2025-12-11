@@ -28,7 +28,7 @@ echo -e "${BLUE}========================================${NC}"
 echo ""
 
 # Check if running as root
-if [ "$EUID" -ne 0 ]; then 
+if [ "$(id -u)" -ne 0 ]; then 
     echo -e "${RED}[ERROR]${NC} Please run with sudo"
     exit 1
 fi
@@ -144,7 +144,7 @@ print_info "Network interface: ${INTERFACE}"
 print_info "Monitoring network: ${HOME_NET}"
 
 # Run Suricata in background
-nohup suricata -c "$SURICATA_CONF" -i "$INTERFACE" --init-errors-fatal > /dev/null 2>&1 &
+nohup suricata -c "$SURICATA_CONF" -i "$INTERFACE" --init-errors-fatal > /var/log/suricata/startup.log 2>&1 &
 SURICATA_PID=$!
 
 sleep 5
@@ -162,6 +162,8 @@ else
         echo "$ACTUAL_PID" > /tmp/suricata.pid
     else
         echo -e "${RED}[ERROR]${NC} Failed to start Suricata"
+        echo "Startup logs:"
+        tail -n 10 /var/log/suricata/startup.log
         echo "Check logs: tail /var/log/suricata/suricata.log"
         exit 1
     fi
