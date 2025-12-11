@@ -64,6 +64,7 @@ apt-get install -y -qq \
     net-tools \
     iputils-ping \
     dnsutils \
+    build-essential \
     sudo
 print_status "Basic tools installed"
 

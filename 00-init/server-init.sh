@@ -65,7 +65,6 @@ apt-get install -y -qq \
     iputils-ping \
     dnsutils \
     build-essential \
-    software-properties-common \
     sudo
 print_status "Basic tools installed"
 
